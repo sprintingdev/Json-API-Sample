@@ -7,8 +7,6 @@ import com.intelligrape.example.json.Book
 @Secured(["ROLE_USER"])
 class JsonController {
 
-    def index = { }
-
     def getBooks = {
         render Book.list() as JSON
     }
