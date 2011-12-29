@@ -6,10 +6,13 @@ import com.intelligrape.example.json.UserRole
 import com.intelligrape.example.json.Book
 import grails.converters.JSON
 import com.intelligrape.example.json.CustomDomainClassJSONMarshaller
+import com.intelligrape.example.json.JSONConstants
 
 class BootstrapService {
 
     static transactional = true
+
+    def grailsApplication
 
     def createRoles() {
         if (Role.count() == 0) {
@@ -35,14 +38,19 @@ class BootstrapService {
     }
 
     public void createDefaultBooks(){
-        new Book(name: "Tale of Two Cities", genre: Book.Genre.FICTION).save()
-        new Book(name: "It's not about my bike", genre: Book.Genre.BIOGRAPHY).save()
-        new Book(name: "Rules of the Game", genre: Book.Genre.NONFICTION).save()
+        new Book(name: "Tale of Two Cities", genre: Book.Genre.FICTION, isbn: "ISBN_1").save()
+        new Book(name: "It's not about my bike", genre: Book.Genre.BIOGRAPHY, isbn: "ISBN_2").save()
+        new Book(name: "Rules of the Game", genre: Book.Genre.NONFICTION, isbn: "ISBN_3").save()
     }
 
 
     void registerCustomJSONMarshallers() {
-//        JSON.registerObjectMarshaller(new CustomJSONMarshaller(), 1)
-        JSON.registerObjectMarshaller(new CustomDomainClassJSONMarshaller(false), 2)
+        JSON.createNamedConfig(JSONConstants.CUSTOM_JSON_MARSHALLER_GROUP){
+            it.registerObjectMarshaller(new CustomDomainClassJSONMarshaller(false, grailsApplication), 2)
+        }
+        
+        JSON.createNamedConfig(JSONConstants.SUMMARY_JSON_MARSHALLER_GROUP){
+            it.registerObjectMarshaller(new CustomDomainClassJSONMarshaller(false, grailsApplication, JSONConstants.SUMMARY_JSON_MARSHALLER_GROUP), 2)
+        }
     }
 }

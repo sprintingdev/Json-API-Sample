@@ -4,6 +4,9 @@ class Book {
 
     String name
     Genre genre
+    String isbn
+
+    static jsonProperties = [summary:['name']]
 
     static constraints = {
     }
